@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.utils.Compression;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
+import java.util.Random;
 
 public class App {
     public static void main(String[] args) throws LoginException, InterruptedException {
@@ -27,11 +28,28 @@ public class App {
         // Disable compression (not recommended)
         builder.setCompression(Compression.NONE);
         // Set activity (like "playing Something")
-        builder.setActivity(Activity.playing("rm -rf /"));
 
         JDA jda = builder.build();
         jda.setAutoReconnect(true);
         jda.awaitReady();
+
+        (new Thread(() -> {
+            final String[] activities = {"rm -rf /", "Coding in HTML", "Debugging my debugger"};
+            final Random rand = new Random();
+            while (true) {
+                jda.getPresence().setActivity(Activity.playing(activities[rand.nextInt(activities.length)]));
+
+                // Wait
+                long start = System.currentTimeMillis();
+                while (System.currentTimeMillis() - start < 60000) {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, "Periodic activity changer thread")).start();
 
         jda.addEventListener(new ListenerAdapter() {
             @Override
