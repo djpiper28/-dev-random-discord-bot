@@ -3,6 +3,7 @@
  */
 package dev.random.discord.bot;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.Compression;
@@ -18,12 +19,13 @@ public class App {
         // Disable parts of the cache
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         // Enable the bulk delete event
-        builder.setBulkDeleteSplittingEnabled(false);
+        builder.setBulkDeleteSplittingEnabled(true);
         // Disable compression (not recommended)
         builder.setCompression(Compression.NONE);
         // Set activity (like "playing Something")
-        builder.setActivity(Activity.watching("TV"));
+        builder.setActivity(Activity.playing("rm -rf /"));
 
-        builder.build();
+        JDA jda = builder.build();
+        jda.setAutoReconnect(true);
     }
 }
